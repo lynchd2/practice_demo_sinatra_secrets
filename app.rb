@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'erb'
 require 'pry-byebug'
+require './models/secret.rb'
 
 
 get '/' do
@@ -17,6 +18,12 @@ end
 
 post '/secrets' do
 
-  # 
+  # "Create" a secret in our model object
+  # Right now, this will "save" the secret to
+  # the session.  We could also write validations into
+  # the model code so, for instance, the secret has to 
+  # be a certain length.  It keeps things modular.
+  secret = Secret.create( :text => params[:secret] )
+
 
 end
