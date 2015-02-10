@@ -1,7 +1,14 @@
 require 'sinatra'
 require 'erb'
 require 'pry-byebug'
-require './models/secret.rb'
+require './helpers/secret_helper.rb'
+
+# Register our SecretHelper module so it's available
+# here and in our views
+helpers SecretHelper
+
+# Enable sessions so we can use the `session` hash
+enable :sessions
 
 
 get '/' do
@@ -22,15 +29,22 @@ end
 
 post '/secret' do
 
-  # "Create" a secret with our model object
-  # Right now, this will "save" the secret to
-  # the session and return the secret object.  
-  # In the future, we could also write validations into
-  # the model code so, for instance, the secret has to 
-  # be a certain length.  It keeps things modular.
-  @secret = Secret.create( params[:secret_text] )
+  # Save our new secret using our helper method, which
+  # returns the secret text as well
+  @secret_text = save_secret( params[:secret_text] )
 
-  # Send us to the secret page, which has access to @secret
+  # Redirect us to the secret showing page (get '/secret')
+  redirect to("secret")
+
+end
+
+
+get '/secret' do
+
+  # Load our secret from the session hash
+  @secret_text = load_secret
+
+  # Render the template with that secret
   erb :"secret/show"
 
 end
