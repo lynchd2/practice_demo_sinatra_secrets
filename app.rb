@@ -8,22 +8,29 @@ get '/' do
   erb :home
 end
 
-get '/secrets/new' do
+
+get '/secret/new' do
+
   # A "Secret" is a resource of its own so we'll nest its
-  # views in the /views/secrets folder
+  # views in the /views/secret folder
   # Remember that views automatically look in the views/ 
-  # folder already so we only need to specify /secrets/new
-  erb :"secrets/new"
+  # folder already so we only need to specify /secret/new
+  erb :"secret/new"
+
 end
 
-post '/secrets' do
 
-  # "Create" a secret in our model object
+post '/secret' do
+
+  # "Create" a secret with our model object
   # Right now, this will "save" the secret to
-  # the session.  We could also write validations into
+  # the session and return the secret object.  
+  # In the future, we could also write validations into
   # the model code so, for instance, the secret has to 
   # be a certain length.  It keeps things modular.
-  secret = Secret.create( :text => params[:secret] )
+  @secret = Secret.create( params[:secret_text] )
 
+  # Send us to the secret page, which has access to @secret
+  erb :"secret/show"
 
 end
