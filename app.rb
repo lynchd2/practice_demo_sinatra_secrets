@@ -1,6 +1,10 @@
 require 'sinatra'
 require 'erb'
 require 'pry-byebug'
+
+# We need to require the secrets helper module before
+# we can register it down below with the `helpers`
+# method
 require './helpers/secret_helper.rb'
 
 # Register our SecretHelper module so it's available
