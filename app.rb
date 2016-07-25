@@ -2,53 +2,34 @@ require 'sinatra'
 require 'erb'
 require 'pry-byebug'
 
+enable :sessions
+
 # We need to require the secrets helper module before
 # we can register it down below with the `helpers`
 # method
 require './helpers/secret_helper.rb'
 
-# Register our SecretHelper module so it's available
-# here and in our views
-helpers SecretHelper
+get "/" do 
 
-# Enable sessions so we can use the `session` hash
-enable :sessions
-
-
-get '/' do
-  erb :home
+  erb :index
 end
 
 
 get '/secret/new' do
 
-  # A "Secret" is a resource of its own so we'll nest its
-  # views in the /views/secret folder
-  # Remember that views automatically look in the views/ 
-  # folder already so we only need to specify /secret/new
-  erb :"secret/new"
-
-end
-
-
-post '/secret' do
-
-  # Save our new secret using our helper method, which
-  # returns the secret text as well
-  @secret_text = save_secret( params[:secret_text] )
-
-  # Redirect us to the secret showing page (get '/secret')
-  redirect to("secret")
-
+  erb :index
 end
 
 
 get '/secret' do
+  secret = session["secret_text"]
 
-  # Load our secret from the session hash
-  @secret_text = load_secret
+  erb :secret, locals: {secret: secret }
+end
 
-  # Render the template with that secret
-  erb :"secret/show"
+
+post "/secret" do
+  session["secret_text"] = params[:secret_text]
+  redirect("/secret")
 
 end
